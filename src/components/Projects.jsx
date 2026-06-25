@@ -77,7 +77,7 @@ function ProjectStage({ p, index }) {
         </div>
 
         {/* Center card */}
-        <div className="w-full max-w-3xl text-center xl:max-w-2xl">
+        <div className="w-full max-w-3xl text-center lg:max-w-2xl">
           <motion.div
             variants={item}
             className="mb-2 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted sm:gap-3 sm:text-xs"
@@ -108,8 +108,8 @@ function ProjectStage({ p, index }) {
             {p.description}
           </motion.p>
 
-          {/* Inline highlights — shown below xl (mobile / tablet / narrow laptop) */}
-          <motion.div variants={item} className="mt-4 flex flex-col items-center gap-3 xl:hidden">
+          {/* Inline highlights — shown below lg (mobile / tablet / narrow windows) */}
+          <motion.div variants={item} className="mt-4 flex flex-col items-center gap-3 lg:hidden">
             <ul className="grid max-w-md gap-1.5 text-left">
               {p.highlights.slice(0, 2).map((h, j) => (
                 <li key={j} className="flex gap-2 text-[11px] text-ink-soft sm:text-sm">
