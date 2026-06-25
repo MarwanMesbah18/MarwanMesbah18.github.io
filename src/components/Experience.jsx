@@ -1,6 +1,12 @@
 import { experiences, education } from '../data/profile'
 import { useReveal } from '../hooks/useReveal'
 
+// Unified timeline in real chronological order: Education → RobEn → Klenka
+const timeline = [
+  { ...education[0], kind: 'edu' },
+  ...experiences.map((e) => ({ ...e, kind: 'exp' })),
+]
+
 export default function Experience() {
   const ref = useReveal()
 
@@ -40,59 +46,52 @@ export default function Experience() {
           <div className="absolute left-[19px] top-2 bottom-2 w-px bg-gradient-to-b from-brand-400 via-brand-300 to-transparent md:left-1/2" />
 
           <div className="space-y-10">
-            {experiences.map((exp, i) => (
-              <div
-                key={`${exp.org}-${i}`}
-                data-reveal
-                className={`relative flex flex-col gap-4 md:flex-row md:items-start ${
-                  i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                }`}
-              >
-                {/* dot */}
-                <div className="absolute left-[11px] top-2 z-10 grid h-5 w-5 place-items-center rounded-full border-2 border-white bg-brand-500 shadow md:left-1/2 md:-translate-x-1/2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                </div>
+            {timeline.map((entry, i) => {
+              const isEdu = entry.kind === 'edu'
+              return (
+                <div
+                  key={`${entry.org}-${i}`}
+                  data-reveal
+                  className={`relative flex flex-col gap-4 md:flex-row md:items-start ${
+                    i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                  }`}
+                >
+                  {/* dot */}
+                  <div
+                    className={`absolute left-[11px] top-2 z-10 grid h-5 w-5 place-items-center rounded-full border-2 border-white shadow md:left-1/2 md:-translate-x-1/2 ${
+                      isEdu ? 'bg-indigo-500' : 'bg-brand-500'
+                    }`}
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                  </div>
 
-                <div className="ml-10 md:ml-0 md:w-1/2" />
-                <div className="ml-10 md:ml-0 md:w-1/2 md:px-8">
-                  <div className="glass-card p-5">
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <h3 className="font-display text-lg font-semibold text-ink">{exp.role}</h3>
-                      <span className="font-mono text-xs text-ink-muted">{exp.period}</span>
+                  <div className="ml-10 md:ml-0 md:w-1/2" />
+                  <div className="ml-10 md:ml-0 md:w-1/2 md:px-8">
+                    <div className="glass-card p-5">
+                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                        <h3 className="font-display text-lg font-semibold text-ink">{entry.role}</h3>
+                        <span className="font-mono text-xs text-ink-muted">{entry.period}</span>
+                      </div>
+                      <div className={`mt-0.5 text-sm font-medium ${isEdu ? 'text-indigo-600' : 'text-brand-600'}`}>
+                        {entry.org}
+                        {!isEdu && <> · {entry.location}</>}
+                      </div>
+                      {isEdu && <div className="mt-0.5 text-xs text-ink-muted">{entry.location}</div>}
+                      {!isEdu && entry.points && (
+                        <ul className="mt-3 space-y-2">
+                          {entry.points.map((p, j) => (
+                            <li key={j} className="flex gap-2 text-sm text-ink-soft">
+                              <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-brand-400" />
+                              <span>{p}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
-                    <div className="mt-0.5 text-sm font-medium text-brand-600">
-                      {exp.org} · {exp.location}
-                    </div>
-                    <ul className="mt-3 space-y-2">
-                      {exp.points.map((p, j) => (
-                        <li key={j} className="flex gap-2 text-sm text-ink-soft">
-                          <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-brand-400" />
-                          <span>{p}</span>
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                 </div>
-              </div>
-            ))}
-
-            {/* Education entry */}
-            <div data-reveal className="relative flex flex-col gap-4 md:flex-row md:items-start">
-              <div className="absolute left-[11px] top-2 z-10 grid h-5 w-5 place-items-center rounded-full border-2 border-white bg-indigo-500 shadow md:left-1/2 md:-translate-x-1/2">
-                <span className="h-1.5 w-1.5 rounded-full bg-white" />
-              </div>
-              <div className="ml-10 md:ml-0 md:w-1/2" />
-              <div className="ml-10 md:ml-0 md:w-1/2 md:px-8">
-                <div className="glass-card p-5">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <h3 className="font-display text-lg font-semibold text-ink">{education[0].role}</h3>
-                    <span className="font-mono text-xs text-ink-muted">{education[0].period}</span>
-                  </div>
-                  <div className="mt-0.5 text-sm font-medium text-indigo-600">{education[0].org}</div>
-                  <div className="mt-0.5 text-xs text-ink-muted">{education[0].location}</div>
-                </div>
-              </div>
-            </div>
+              )
+            })}
           </div>
         </div>
       </div>

@@ -8,6 +8,18 @@ const reduceMotion =
 
 const HOLD_MS = 1000 // each project is "held" — inputs ignored for this long after a move
 
+// Scattered chip positions — spread AROUND the centered card.
+// Top/bottom chips sit in the empty space above/below the card; mid chips sit in
+// the side margins. Only shown on wide (xl+) screens so they never overlap.
+const SPOTS = [
+  { top: '17%', left: '12%', rot: -7 },
+  { top: '15%', right: '26%', rot: 5 },
+  { top: '47%', left: '1%', rot: 4 },
+  { top: '47%', right: '1%', rot: -5 },
+  { bottom: '16%', left: '25%', rot: 7 },
+  { bottom: '14%', right: '12%', rot: -6 },
+]
+
 const container = {
   initial: {},
   animate: { transition: { staggerChildren: 0.07, delayChildren: 0.04 } },
@@ -34,50 +46,24 @@ function GithubIcon() {
   )
 }
 
-function Chip({ text, rotate, align }) {
-  return (
-    <motion.span
-      variants={item}
-      style={{ rotate: `${rotate}deg`, alignSelf: align }}
-      className="inline-block w-full max-w-[15rem] rounded-2xl border border-ink/15 bg-surface/90 px-4 py-2.5 text-xs font-semibold text-ink shadow-card backdrop-blur-md sm:text-sm"
-    >
-      <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-brand-500 align-middle" />
-      {text}
-    </motion.span>
-  )
-}
-
 function ProjectStage({ p, index }) {
-  // Split the highlight + tech snippets into two flanking columns (wide screens).
-  const snippets = [...p.highlights.slice(0, 4), ...p.tech.slice(0, 2)]
-  const left = snippets.slice(0, Math.ceil(snippets.length / 2))
-  const right = snippets.slice(Math.ceil(snippets.length / 2))
-  const rotL = [-4, 3, -3]
-  const rotR = [3, -4, 4]
+  const scatter = [...p.highlights.slice(0, 4), ...p.tech.slice(0, 2)].slice(0, SPOTS.length)
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center px-5 py-24 sm:px-6 sm:py-20">
-      <motion.div
-        variants={container}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        className="relative flex w-full max-w-6xl items-center justify-center gap-3 xl:gap-8"
-      >
-        {/* glow */}
-        <div
-          className={`pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[24rem] w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br ${p.accent} opacity-20 blur-[90px] dark:opacity-25`}
-        />
+    <>
+      {/* Center composition */}
+      <div className="absolute inset-0 flex items-center justify-center px-5 py-24 sm:px-6 sm:py-20">
+        <motion.div
+          variants={container}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          className="relative w-full max-w-2xl text-center"
+        >
+          <div
+            className={`pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[22rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br ${p.accent} opacity-20 blur-[90px] dark:opacity-25`}
+          />
 
-        {/* Left flank — wide screens only */}
-        <div className="hidden w-48 flex-col gap-3 lg:flex xl:w-56">
-          {left.map((s, i) => (
-            <Chip key={i} text={s} rotate={rotL[i % rotL.length]} align={i % 2 ? 'self-start' : 'self-end'} />
-          ))}
-        </div>
-
-        {/* Center card */}
-        <div className="w-full max-w-3xl text-center lg:max-w-2xl">
           <motion.div
             variants={item}
             className="mb-2 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted sm:gap-3 sm:text-xs"
@@ -108,8 +94,8 @@ function ProjectStage({ p, index }) {
             {p.description}
           </motion.p>
 
-          {/* Inline highlights — shown below lg (mobile / tablet / narrow windows) */}
-          <motion.div variants={item} className="mt-4 flex flex-col items-center gap-3 lg:hidden">
+          {/* Inline highlights — below xl (mobile / tablet / narrow windows) */}
+          <motion.div variants={item} className="mt-4 flex flex-col items-center gap-3 xl:hidden">
             <ul className="grid max-w-md gap-1.5 text-left">
               {p.highlights.slice(0, 2).map((h, j) => (
                 <li key={j} className="flex gap-2 text-[11px] text-ink-soft sm:text-sm">
@@ -146,16 +132,34 @@ function ProjectStage({ p, index }) {
               </span>
             )}
           </motion.div>
-        </div>
+        </motion.div>
+      </div>
 
-        {/* Right flank — wide screens only */}
-        <div className="hidden w-48 flex-col gap-3 lg:flex xl:w-56">
-          {right.map((s, i) => (
-            <Chip key={i} text={s} rotate={rotR[i % rotR.length]} align={i % 2 ? 'self-end' : 'self-start'} />
-          ))}
-        </div>
-      </motion.div>
-    </div>
+      {/* Scattered chips — wide desktop only (xl+), spread around the card */}
+      <div className="pointer-events-none absolute inset-0 hidden xl:block">
+        {scatter.map((s, i) => {
+          const spot = SPOTS[i % SPOTS.length]
+          return (
+            <motion.span
+              key={i}
+              variants={item}
+              style={{
+                position: 'absolute',
+                top: spot.top,
+                left: spot.left,
+                right: spot.right,
+                bottom: spot.bottom,
+                rotate: `${spot.rot}deg`,
+              }}
+              className="max-w-[16rem] rounded-2xl border border-ink/15 bg-surface/90 px-4 py-2.5 text-xs font-semibold text-ink shadow-card backdrop-blur-md sm:text-sm"
+            >
+              <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-brand-500 align-middle" />
+              {s}
+            </motion.span>
+          )
+        })}
+      </div>
+    </>
   )
 }
 
@@ -164,7 +168,7 @@ function Showcase() {
   const lenis = useLenis()
   const [active, setActive] = useState(0)
   const N = projects.length
-  const stateRef = useRef({ active: 0, locked: false, lastNav: 0, exiting: false })
+  const stateRef = useRef({ active: 0, locked: false, snapping: false, lastNav: 0, exiting: false })
 
   useEffect(() => {
     stateRef.current.active = active
@@ -176,6 +180,7 @@ function Showcase() {
 
     const navigate = (dir) => {
       const s = stateRef.current
+      if (s.snapping) return
       const now = Date.now()
       if (now - s.lastNav < HOLD_MS) return // hold: ignore inputs within HOLD_MS
 
@@ -200,9 +205,10 @@ function Showcase() {
     }
 
     const onWheel = (e) => {
-      if (!stateRef.current.locked) return
+      const s = stateRef.current
+      if (!s.locked && !s.snapping) return
       e.preventDefault()
-      if (Math.abs(e.deltaY) < 6) return
+      if (s.snapping || Math.abs(e.deltaY) < 6) return
       navigate(e.deltaY > 0 ? 1 : -1)
     }
 
@@ -211,17 +217,20 @@ function Showcase() {
       touchStartY = e.touches[0].clientY
     }
     const onTouchMove = (e) => {
-      if (stateRef.current.locked && touchStartY != null) e.preventDefault()
+      const s = stateRef.current
+      if ((s.locked || s.snapping) && touchStartY != null) e.preventDefault()
     }
     const onTouchEnd = (e) => {
-      if (!stateRef.current.locked || touchStartY == null) return
+      const s = stateRef.current
+      if (s.snapping || !s.locked || touchStartY == null) return
       const dy = touchStartY - e.changedTouches[0].clientY
       if (Math.abs(dy) > 35) navigate(dy > 0 ? 1 : -1)
       touchStartY = null
     }
 
     const onKey = (e) => {
-      if (!stateRef.current.locked) return
+      const s = stateRef.current
+      if (!s.locked) return
       if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
         e.preventDefault()
         navigate(1)
@@ -232,22 +241,36 @@ function Showcase() {
     }
 
     const onAnchorClickCapture = (e) => {
-      if (!stateRef.current.locked) return
+      const s = stateRef.current
+      if (!s.locked) return
       const a = e.target.closest('a[href^="#"]')
       if (!a) return
-      stateRef.current.locked = false
+      s.locked = false
       if (lenis) lenis.start()
     }
 
+    // Trap + SNAP the section so it fills the viewport when it comes into view.
     const io = new IntersectionObserver(
       (entries) => {
         const s = stateRef.current
         const entry = entries[0]
-        if (entry.intersectionRatio >= 0.85 && !s.exiting) {
-          if (!s.locked) {
+        if (entry.intersectionRatio >= 0.85 && !s.locked && !s.snapping && !s.exiting) {
+          s.snapping = true
+          if (lenis) {
+            lenis.scrollTo(section, {
+              offset: 0,
+              duration: 0.5,
+              onComplete: () => {
+                s.snapping = false
+                s.locked = true
+                s.lastNav = 0
+                lenis.stop()
+              },
+            })
+          } else {
+            s.snapping = false
             s.locked = true
             s.lastNav = 0
-            if (lenis) lenis.stop()
           }
         }
       },
