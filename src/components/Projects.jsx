@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { projects } from '../data/projects'
+import { useLenis } from '../lib/lenisContext'
 
 const reduceMotion =
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+const HOLD_MS = 1000 // each project is "held" — inputs ignored for this long after a move
 
 // Scatter positions for the floating chips — kept in the safe side margins,
 // only shown on wide (xl+) screens so they never overlap the centered title.
@@ -118,18 +121,9 @@ function ProjectStage({ p, index }) {
             </div>
           </motion.div>
 
-          <motion.div
-            variants={item}
-            className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:mt-7"
-          >
+          <motion.div variants={item} className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:mt-7">
             {p.links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                target="_blank"
-                rel="noreferrer"
-                className="btn-primary px-4 py-2 text-xs sm:px-5 sm:py-2.5 sm:text-sm"
-              >
+              <a key={l.href} href={l.href} target="_blank" rel="noreferrer" className="btn-primary px-4 py-2 text-xs sm:px-5 sm:py-2.5 sm:text-sm">
                 <GithubIcon />
                 {l.label}
               </a>
@@ -177,61 +171,156 @@ function ProjectStage({ p, index }) {
 
 function Showcase() {
   const sectionRef = useRef(null)
+  const lenis = useLenis()
   const [active, setActive] = useState(0)
   const N = projects.length
+  // mutable state used inside event handlers (avoids stale closures)
+  const stateRef = useRef({ active: 0, locked: false, lastNav: 0, exiting: false })
+
+  useEffect(() => {
+    stateRef.current.active = active
+  }, [active])
 
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
 
-    let raf = 0
-    const update = () => {
-      raf = 0
-      const rect = section.getBoundingClientRect()
-      const total = section.offsetHeight - window.innerHeight
-      const progress = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0
-      setActive(Math.round(progress * (N - 1)))
-    }
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update)
+    const navigate = (dir) => {
+      const s = stateRef.current
+      const now = Date.now()
+      if (now - s.lastNav < HOLD_MS) return // hold: ignore inputs within HOLD_MS
+
+      const next = s.active + dir
+      if (next < 0 || next > N - 1) {
+        // boundary — release the trap and scroll to the neighbouring section
+        if (s.exiting) return
+        s.exiting = true
+        s.locked = false
+        if (lenis) {
+          lenis.start()
+          const target = dir > 0 ? section.nextElementSibling : section.previousElementSibling
+          if (target) lenis.scrollTo(target, { offset: 0, duration: 1 })
+        }
+        setTimeout(() => {
+          s.exiting = false
+        }, 900)
+        return
+      }
+
+      s.lastNav = now
+      setActive(next)
     }
 
-    update()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      if (raf) cancelAnimationFrame(raf)
+    const onWheel = (e) => {
+      if (!stateRef.current.locked) return
+      e.preventDefault()
+      if (Math.abs(e.deltaY) < 6) return
+      navigate(e.deltaY > 0 ? 1 : -1)
     }
-  }, [N])
+
+    let touchStartY = null
+    const onTouchStart = (e) => {
+      touchStartY = e.touches[0].clientY
+    }
+    const onTouchMove = (e) => {
+      if (stateRef.current.locked && touchStartY != null) e.preventDefault()
+    }
+    const onTouchEnd = (e) => {
+      if (!stateRef.current.locked || touchStartY == null) return
+      const dy = touchStartY - e.changedTouches[0].clientY
+      if (Math.abs(dy) > 35) navigate(dy > 0 ? 1 : -1)
+      touchStartY = null
+    }
+
+    const onKey = (e) => {
+      if (!stateRef.current.locked) return
+      if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
+        e.preventDefault()
+        navigate(1)
+      } else if (['ArrowUp', 'PageUp'].includes(e.key)) {
+        e.preventDefault()
+        navigate(-1)
+      }
+    }
+
+    // Release the trap when the user clicks any in-page anchor (navbar / CTA).
+    const onAnchorClickCapture = (e) => {
+      if (!stateRef.current.locked) return
+      const a = e.target.closest('a[href^="#"]')
+      if (!a) return
+      stateRef.current.locked = false
+      if (lenis) lenis.start()
+    }
+
+    // Trap the section once it fills the viewport.
+    const io = new IntersectionObserver(
+      (entries) => {
+        const s = stateRef.current
+        const entry = entries[0]
+        if (entry.intersectionRatio >= 0.85 && !s.exiting) {
+          if (!s.locked) {
+            s.locked = true
+            s.lastNav = 0 // allow the first move to feel responsive on entry
+            if (lenis) lenis.stop()
+          }
+        }
+      },
+      { threshold: [0, 0.5, 0.85, 1] },
+    )
+    io.observe(section)
+
+    window.addEventListener('wheel', onWheel, { passive: false })
+    window.addEventListener('touchstart', onTouchStart, { passive: false })
+    window.addEventListener('touchmove', onTouchMove, { passive: false })
+    window.addEventListener('touchend', onTouchEnd, { passive: false })
+    window.addEventListener('keydown', onKey)
+    document.addEventListener('click', onAnchorClickCapture, true)
+
+    return () => {
+      io.disconnect()
+      window.removeEventListener('wheel', onWheel)
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchend', onTouchEnd)
+      window.removeEventListener('keydown', onKey)
+      document.removeEventListener('click', onAnchorClickCapture, true)
+    }
+  }, [lenis, N])
 
   const p = projects[active]
 
   return (
-    <section id="projects" ref={sectionRef} style={{ height: `${N * 100}vh` }} className="relative">
-      <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
-        {/* HUD */}
-        <div className="container-px pointer-events-none absolute inset-x-0 top-20 z-20 flex items-center justify-between sm:top-24">
-          <div className="eyebrow">
-            <span className="h-px w-8 bg-brand-500" /> Selected work
-          </div>
-          <div className="flex items-center gap-2 font-mono text-sm text-ink-muted sm:gap-3">
-            <span className="text-base font-bold text-ink sm:text-lg">
-              {String(active + 1).padStart(2, '0')}
-            </span>
-            <span>/</span>
-            <span>{String(N).padStart(2, '0')}</span>
-          </div>
+    <section id="projects" ref={sectionRef} className="relative h-[100svh] w-full overflow-hidden">
+      {/* HUD */}
+      <div className="container-px pointer-events-none absolute inset-x-0 top-20 z-20 flex items-center justify-between sm:top-24">
+        <div className="eyebrow">
+          <span className="h-px w-8 bg-brand-500" /> Selected work
         </div>
-
-        <AnimatePresence mode="wait">
-          <ProjectStage key={active} p={p} index={active} />
-        </AnimatePresence>
-
-        <div className="pointer-events-none absolute inset-x-0 bottom-3 z-10 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-ink-muted sm:text-[11px] sm:tracking-[0.3em]">
-          Scroll for next ↻
+        <div className="flex items-center gap-2 font-mono text-sm text-ink-muted sm:gap-3">
+          <span className="text-base font-bold text-ink sm:text-lg">{String(active + 1).padStart(2, '0')}</span>
+          <span>/</span>
+          <span>{String(N).padStart(2, '0')}</span>
         </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        <ProjectStage key={active} p={p} index={active} />
+      </AnimatePresence>
+
+      {/* progress dots */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center gap-1.5">
+        {projects.map((pr, i) => (
+          <span
+            key={pr.id}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === active ? 'w-6 bg-brand-500' : 'w-1.5 bg-ink/20'
+            }`}
+          />
+        ))}
+      </div>
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-2 z-10 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-ink-muted sm:text-[11px] sm:tracking-[0.3em]">
+        Scroll / swipe for next ↻
       </div>
     </section>
   )
