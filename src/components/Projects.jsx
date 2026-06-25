@@ -103,7 +103,7 @@ function ProjectStage({ p, index }) {
 
           <motion.p
             variants={item}
-            className="mx-auto mt-3 max-w-xl text-xs leading-relaxed text-ink-soft line-clamp-3 sm:mt-4 sm:text-sm md:text-base"
+            className="mx-auto mt-3 max-w-xl text-xs leading-relaxed text-ink-soft line-clamp-4 sm:mt-4 sm:text-sm md:line-clamp-none md:text-base"
           >
             {p.description}
           </motion.p>

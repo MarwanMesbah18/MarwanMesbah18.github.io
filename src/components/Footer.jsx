@@ -24,7 +24,7 @@ export default function Footer() {
         </div>
 
         <div className="font-mono text-xs">
-          Built with React · Three.js · GSAP
+          Built with React · Vite · GSAP
         </div>
       </div>
     </footer>
