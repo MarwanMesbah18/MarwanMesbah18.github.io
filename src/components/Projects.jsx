@@ -8,17 +8,6 @@ const reduceMotion =
 
 const HOLD_MS = 1000 // each project is "held" — inputs ignored for this long after a move
 
-// Scatter positions for the floating chips — kept in the safe side margins,
-// only shown on wide (xl+) screens so they never overlap the centered title.
-const SPOTS = [
-  { top: '17%', left: '4%', rot: -6 },
-  { top: '19%', right: '5%', rot: 5 },
-  { top: '50%', left: '1%', rot: 4 },
-  { bottom: '19%', right: '3%', rot: -5 },
-  { bottom: '17%', left: '5%', rot: 6 },
-  { top: '52%', right: '1%', rot: -4 },
-]
-
 const container = {
   initial: {},
   animate: { transition: { staggerChildren: 0.07, delayChildren: 0.04 } },
@@ -26,7 +15,7 @@ const container = {
 }
 
 const item = {
-  initial: { opacity: 0, y: 26, scale: 0.92, filter: 'blur(8px)' },
+  initial: { opacity: 0, y: 22, scale: 0.94, filter: 'blur(8px)' },
   animate: {
     opacity: 1,
     y: 0,
@@ -34,7 +23,7 @@ const item = {
     filter: 'blur(0px)',
     transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
   },
-  exit: { opacity: 0, y: -16, scale: 0.96, filter: 'blur(8px)', transition: { duration: 0.3 } },
+  exit: { opacity: 0, y: -14, scale: 0.96, filter: 'blur(8px)', transition: { duration: 0.3 } },
 }
 
 function GithubIcon() {
@@ -45,62 +34,81 @@ function GithubIcon() {
   )
 }
 
+function Chip({ text, rotate, align }) {
+  return (
+    <motion.span
+      variants={item}
+      style={{ rotate: `${rotate}deg`, alignSelf: align }}
+      className="inline-block w-full max-w-[15rem] rounded-2xl border border-ink/15 bg-surface/90 px-4 py-2.5 text-xs font-semibold text-ink shadow-card backdrop-blur-md sm:text-sm"
+    >
+      <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-brand-500 align-middle" />
+      {text}
+    </motion.span>
+  )
+}
+
 function ProjectStage({ p, index }) {
-  const scatter = [...p.highlights.slice(0, 4), ...p.tech.slice(0, 2)].slice(0, SPOTS.length)
+  // Split the highlight + tech snippets into two flanking columns (wide screens).
+  const snippets = [...p.highlights.slice(0, 4), ...p.tech.slice(0, 2)]
+  const left = snippets.slice(0, Math.ceil(snippets.length / 2))
+  const right = snippets.slice(Math.ceil(snippets.length / 2))
+  const rotL = [-4, 3, -3]
+  const rotR = [3, -4, 4]
 
   return (
-    <>
-      {/* Center composition */}
-      <div className="absolute inset-0 grid place-items-center px-6">
-        <motion.div
-          variants={container}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          className="relative w-full max-w-3xl text-center"
-        >
-          <div
-            className={`pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[22rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br ${p.accent} opacity-25 blur-[90px] dark:opacity-30`}
-          />
+    <div className="absolute inset-0 flex items-center justify-center px-5 py-24 sm:px-6 sm:py-20">
+      <motion.div
+        variants={container}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="relative flex w-full max-w-6xl items-center justify-center gap-3 xl:gap-8"
+      >
+        {/* glow */}
+        <div
+          className={`pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[24rem] w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br ${p.accent} opacity-20 blur-[90px] dark:opacity-25`}
+        />
 
+        {/* Left flank — wide screens only */}
+        <div className="hidden w-48 flex-col gap-3 lg:flex xl:w-56">
+          {left.map((s, i) => (
+            <Chip key={i} text={s} rotate={rotL[i % rotL.length]} align={i % 2 ? 'self-start' : 'self-end'} />
+          ))}
+        </div>
+
+        {/* Center card */}
+        <div className="w-full max-w-3xl text-center xl:max-w-2xl">
           <motion.div
             variants={item}
-            className="mb-3 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted sm:gap-3 sm:text-xs"
+            className="mb-2 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted sm:gap-3 sm:text-xs"
           >
-            <span className="text-base font-bold text-ink sm:text-lg">
-              {String(index + 1).padStart(2, '0')}
-            </span>
+            <span className="text-base font-bold text-ink sm:text-lg">{String(index + 1).padStart(2, '0')}</span>
             <span className="h-px w-6 bg-ink/20 sm:w-8" />
             <span className="hidden sm:inline">{p.category}</span>
             {p.flag && (
-              <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-brand-600 dark:text-brand-300">
-                {p.flag}
-              </span>
+              <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-brand-600 dark:text-brand-300">{p.flag}</span>
             )}
           </motion.div>
 
           <motion.h2
             variants={item}
-            className="font-display text-4xl font-extrabold leading-[0.95] tracking-tight text-ink sm:text-6xl md:text-8xl"
+            className="font-display text-4xl font-extrabold leading-[0.98] tracking-tight text-ink sm:text-5xl md:text-6xl xl:text-7xl"
           >
             {p.title}
           </motion.h2>
 
-          <motion.p
-            variants={item}
-            className="mt-2 font-display text-base font-semibold text-gradient sm:mt-3 sm:text-2xl"
-          >
+          <motion.p variants={item} className="mt-2 font-display text-base font-semibold text-gradient sm:text-xl md:text-2xl">
             {p.subtitle}
           </motion.p>
 
           <motion.p
             variants={item}
-            className="mx-auto mt-3 max-w-xl text-xs leading-relaxed text-ink-soft sm:mt-5 sm:text-base"
+            className="mx-auto mt-3 max-w-xl text-xs leading-relaxed text-ink-soft line-clamp-3 sm:mt-4 sm:text-sm md:text-base"
           >
             {p.description}
           </motion.p>
 
-          {/* Inline highlights — cohesive block shown below xl (mobile/tablet/narrow windows) */}
+          {/* Inline highlights — shown below xl (mobile / tablet / narrow laptop) */}
           <motion.div variants={item} className="mt-4 flex flex-col items-center gap-3 xl:hidden">
             <ul className="grid max-w-md gap-1.5 text-left">
               {p.highlights.slice(0, 2).map((h, j) => (
@@ -121,7 +129,7 @@ function ProjectStage({ p, index }) {
             </div>
           </motion.div>
 
-          <motion.div variants={item} className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:mt-7">
+          <motion.div variants={item} className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:mt-6">
             {p.links.map((l) => (
               <a key={l.href} href={l.href} target="_blank" rel="noreferrer" className="btn-primary px-4 py-2 text-xs sm:px-5 sm:py-2.5 sm:text-sm">
                 <GithubIcon />
@@ -138,34 +146,16 @@ function ProjectStage({ p, index }) {
               </span>
             )}
           </motion.div>
-        </motion.div>
-      </div>
+        </div>
 
-      {/* Scattered chips — wide desktop only (xl+), positioned in the side margins */}
-      <div className="pointer-events-none absolute inset-0 hidden xl:block">
-        {scatter.map((s, i) => {
-          const spot = SPOTS[i % SPOTS.length]
-          return (
-            <motion.span
-              key={i}
-              variants={item}
-              style={{
-                position: 'absolute',
-                top: spot.top,
-                left: spot.left,
-                right: spot.right,
-                bottom: spot.bottom,
-                rotate: `${spot.rot}deg`,
-              }}
-              className="max-w-[18rem] rounded-2xl border border-ink/15 bg-surface/90 px-5 py-3 text-sm font-semibold text-ink shadow-card backdrop-blur-md"
-            >
-              <span className="mr-2 inline-block h-2 w-2 rounded-full bg-brand-500 align-middle" />
-              {s}
-            </motion.span>
-          )
-        })}
-      </div>
-    </>
+        {/* Right flank — wide screens only */}
+        <div className="hidden w-48 flex-col gap-3 lg:flex xl:w-56">
+          {right.map((s, i) => (
+            <Chip key={i} text={s} rotate={rotR[i % rotR.length]} align={i % 2 ? 'self-end' : 'self-start'} />
+          ))}
+        </div>
+      </motion.div>
+    </div>
   )
 }
 
@@ -174,7 +164,6 @@ function Showcase() {
   const lenis = useLenis()
   const [active, setActive] = useState(0)
   const N = projects.length
-  // mutable state used inside event handlers (avoids stale closures)
   const stateRef = useRef({ active: 0, locked: false, lastNav: 0, exiting: false })
 
   useEffect(() => {
@@ -192,7 +181,6 @@ function Showcase() {
 
       const next = s.active + dir
       if (next < 0 || next > N - 1) {
-        // boundary — release the trap and scroll to the neighbouring section
         if (s.exiting) return
         s.exiting = true
         s.locked = false
@@ -243,7 +231,6 @@ function Showcase() {
       }
     }
 
-    // Release the trap when the user clicks any in-page anchor (navbar / CTA).
     const onAnchorClickCapture = (e) => {
       if (!stateRef.current.locked) return
       const a = e.target.closest('a[href^="#"]')
@@ -252,7 +239,6 @@ function Showcase() {
       if (lenis) lenis.start()
     }
 
-    // Trap the section once it fills the viewport.
     const io = new IntersectionObserver(
       (entries) => {
         const s = stateRef.current
@@ -260,7 +246,7 @@ function Showcase() {
         if (entry.intersectionRatio >= 0.85 && !s.exiting) {
           if (!s.locked) {
             s.locked = true
-            s.lastNav = 0 // allow the first move to feel responsive on entry
+            s.lastNav = 0
             if (lenis) lenis.stop()
           }
         }
@@ -291,7 +277,6 @@ function Showcase() {
 
   return (
     <section id="projects" ref={sectionRef} className="relative h-[100svh] w-full overflow-hidden">
-      {/* HUD */}
       <div className="container-px pointer-events-none absolute inset-x-0 top-20 z-20 flex items-center justify-between sm:top-24">
         <div className="eyebrow">
           <span className="h-px w-8 bg-brand-500" /> Selected work
@@ -307,7 +292,6 @@ function Showcase() {
         <ProjectStage key={active} p={p} index={active} />
       </AnimatePresence>
 
-      {/* progress dots */}
       <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center gap-1.5">
         {projects.map((pr, i) => (
           <span
