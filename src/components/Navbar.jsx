@@ -57,10 +57,10 @@ export default function Navbar() {
 
         {/* Theme toggle — collapses on scroll, returns on hover */}
         <div
-          className={`flex flex-shrink-0 items-center overflow-hidden whitespace-nowrap transition-all duration-500 ${
+          className={`flex min-w-0 flex-shrink-0 items-center overflow-hidden whitespace-nowrap transition-all duration-500 ${
             scrolled
-              ? 'md:max-w-0 md:opacity-0 md:group-hover:max-w-[2.75rem] md:group-hover:opacity-100'
-              : 'max-w-[2.75rem] opacity-100'
+              ? 'md:max-w-0 md:opacity-0 md:group-hover:mx-1 md:group-hover:max-w-[2.75rem] md:group-hover:opacity-100'
+              : 'mx-1 max-w-[2.75rem] opacity-100'
           }`}
         >
           <ThemeToggle />
@@ -69,7 +69,7 @@ export default function Navbar() {
         {/* CTA — collapses on scroll, returns on hover (desktop) */}
         <a
           href="#contact"
-          className={`hidden flex-shrink-0 items-center gap-2 overflow-hidden whitespace-nowrap rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow transition-all duration-500 hover:bg-brand-600 md:inline-flex ${
+          className={`hidden flex-shrink-0 min-w-0 items-center gap-2 overflow-hidden whitespace-nowrap rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow transition-all duration-500 hover:bg-brand-600 md:inline-flex ${
             scrolled
               ? 'md:max-w-0 md:opacity-0 md:group-hover:mr-1 md:group-hover:max-w-[9rem] md:group-hover:opacity-100'
               : 'mr-1 max-w-[9rem] opacity-100'
