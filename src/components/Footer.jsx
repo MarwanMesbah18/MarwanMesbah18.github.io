@@ -6,9 +6,6 @@ export default function Footer() {
     <footer className="relative border-t border-ink/5 py-10">
       <div className="container-px flex flex-col items-center justify-between gap-4 text-sm text-ink-muted md:flex-row">
         <div className="flex items-center gap-2">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-brand-400 to-brand-700 font-display text-xs font-extrabold text-white">
-            MM
-          </span>
           <span className="font-medium text-ink-soft">
             {profile.name} · © {year}
           </span>

@@ -28,22 +28,13 @@ export default function Navbar() {
           scrolled ? 'h-12 px-2 md:gap-0 md:group-hover:gap-1' : 'h-14 pl-2 pr-2'
         }`}
       >
-        {/* MM logo — collapses on scroll, returns on hover (desktop) */}
+        {/* Name — always visible on desktop, links back to top */}
         <a
           href="#home"
-          className={`grid h-9 w-9 flex-shrink-0 place-items-center overflow-hidden whitespace-nowrap rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 font-display text-xs font-extrabold text-white shadow-glow transition-all duration-500 ${
-            scrolled
-              ? 'md:max-w-0 md:opacity-0 md:group-hover:ml-1 md:group-hover:max-w-[2.5rem] md:group-hover:opacity-100'
-              : 'ml-1 max-w-[2.5rem] opacity-100'
-          }`}
+          className="hidden whitespace-nowrap px-3 font-display text-sm font-semibold tracking-tight text-ink md:inline"
         >
-          MM
-        </a>
-
-        {/* Name — ALWAYS visible on desktop (this is all that shows when scrolled) */}
-        <span className="hidden whitespace-nowrap px-3 font-display text-sm font-semibold tracking-tight text-ink md:inline">
           {profile.name}
-        </span>
+        </a>
 
         {/* Links — collapse on scroll, return on hover */}
         <div
