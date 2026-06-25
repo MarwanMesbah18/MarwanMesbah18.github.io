@@ -254,27 +254,18 @@ function Showcase() {
       (entries) => {
         const s = stateRef.current
         const entry = entries[0]
-        if (entry.intersectionRatio >= 0.85 && !s.locked && !s.snapping && !s.exiting) {
+        if (entry.intersectionRatio >= 0.9 && !s.locked && !s.snapping && !s.exiting) {
           s.snapping = true
           if (lenis) {
-            lenis.scrollTo(section, {
-              offset: 0,
-              duration: 0.5,
-              onComplete: () => {
-                s.snapping = false
-                s.locked = true
-                s.lastNav = 0
-                lenis.stop()
-              },
-            })
-          } else {
-            s.snapping = false
-            s.locked = true
-            s.lastNav = 0
+            lenis.scrollTo(section, { offset: 0, immediate: true })
+            lenis.stop()
           }
+          s.snapping = false
+          s.locked = true
+          s.lastNav = 0
         }
       },
-      { threshold: [0, 0.5, 0.85, 1] },
+      { threshold: [0, 0.5, 0.9, 1] },
     )
     io.observe(section)
 
