@@ -25,19 +25,27 @@ export default function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-3 md:pt-4">
       <nav
         className={`group flex items-center gap-1 rounded-full border border-ink/10 bg-surface/70 shadow-card backdrop-blur-xl transition-all duration-500 ${
-          scrolled ? 'h-12 px-2' : 'h-14 pl-3 pr-2'
+          scrolled ? 'h-12 px-2' : 'h-14 pl-2 pr-2'
         }`}
       >
-        <a href="#home" className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 font-display text-xs font-extrabold text-white shadow-glow">
+        {/* MM logo — collapses on scroll, returns on hover (desktop) */}
+        <a
+          href="#home"
+          className={`grid h-9 w-9 flex-shrink-0 place-items-center overflow-hidden whitespace-nowrap rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 font-display text-xs font-extrabold text-white shadow-glow transition-all duration-500 ${
+            scrolled
+              ? 'md:max-w-0 md:opacity-0 md:group-hover:ml-1 md:group-hover:max-w-[2.5rem] md:group-hover:opacity-100'
+              : 'ml-1 max-w-[2.5rem] opacity-100'
+          }`}
+        >
           MM
         </a>
 
-        {/* Name — always visible on desktop */}
-        <span className="hidden font-display text-sm font-semibold tracking-tight text-ink md:inline">
+        {/* Name — ALWAYS visible on desktop (this is all that shows when scrolled) */}
+        <span className="hidden whitespace-nowrap px-3 font-display text-sm font-semibold tracking-tight text-ink md:inline">
           {profile.name}
         </span>
 
-        {/* Links — collapse on scroll, expand on hover (dynamic island) */}
+        {/* Links — collapse on scroll, return on hover */}
         <div
           className={`hidden items-center gap-1 overflow-hidden whitespace-nowrap transition-all duration-500 md:flex ${
             scrolled
@@ -56,15 +64,30 @@ export default function Navbar() {
           ))}
         </div>
 
-        <ThemeToggle />
+        {/* Theme toggle — collapses on scroll, returns on hover */}
+        <div
+          className={`flex flex-shrink-0 items-center overflow-hidden whitespace-nowrap transition-all duration-500 ${
+            scrolled
+              ? 'md:max-w-0 md:opacity-0 md:group-hover:max-w-[2.75rem] md:group-hover:opacity-100'
+              : 'max-w-[2.75rem] opacity-100'
+          }`}
+        >
+          <ThemeToggle />
+        </div>
 
+        {/* CTA — collapses on scroll, returns on hover (desktop) */}
         <a
           href="#contact"
-          className="hidden flex-shrink-0 items-center gap-2 rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow transition-all hover:bg-brand-600 sm:inline-flex"
+          className={`hidden flex-shrink-0 items-center gap-2 overflow-hidden whitespace-nowrap rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow transition-all duration-500 hover:bg-brand-600 md:inline-flex ${
+            scrolled
+              ? 'md:mr-1 md:max-w-0 md:opacity-0 md:group-hover:max-w-[9rem] md:group-hover:opacity-100'
+              : 'mr-1 max-w-[9rem] opacity-100'
+          }`}
         >
           Let&apos;s talk
         </a>
 
+        {/* Mobile menu button */}
         <button
           aria-label="Toggle menu"
           onClick={() => setOpen((v) => !v)}

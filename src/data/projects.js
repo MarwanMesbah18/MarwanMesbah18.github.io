@@ -1,7 +1,7 @@
 // Each project is a standalone object — add a new one by copying a block.
 // `image` is optional. If omitted, a styled gradient card is rendered.
 
-export const projects = [
+const _all = [
   {
     id: 'radar',
     title: 'RADAR',
@@ -126,3 +126,6 @@ export const projects = [
     accent: 'from-violet-500 to-blue-600',
   },
 ]
+
+const PROJECT_ORDER = ['chameleoni', 'radar', 'eurosat', 'imu', 'attendance', 'fruit-ninja']
+export const projects = PROJECT_ORDER.map((id) => _all.find((p) => p.id === id)).filter(Boolean)

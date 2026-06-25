@@ -9,14 +9,14 @@ gsap.registerPlugin(ScrollTrigger)
 const reduceMotion =
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-// Fixed scatter positions around the centered card (desktop only).
+// Scatter positions — kept close to the centered card.
 const SPOTS = [
-  { top: '15%', left: '8%', rot: -6 },
-  { top: '19%', right: '10%', rot: 5 },
-  { top: '47%', left: '4%', rot: 4 },
-  { bottom: '22%', right: '6%', rot: -5 },
-  { bottom: '13%', left: '16%', rot: 6 },
-  { top: '43%', right: '5%', rot: -4 },
+  { top: '24%', left: '17%', rot: -6 },
+  { top: '27%', right: '19%', rot: 5 },
+  { top: '47%', left: '13%', rot: 4 },
+  { bottom: '27%', right: '15%', rot: -5 },
+  { bottom: '20%', left: '24%', rot: 6 },
+  { top: '45%', right: '15%', rot: -4 },
 ]
 
 const container = {
@@ -45,34 +45,36 @@ function GithubIcon() {
   )
 }
 
-function ProjectScene({ p, index, total }) {
-  const scatter = [
-    ...p.highlights.slice(0, 4),
-    ...p.tech.slice(0, 2),
-  ].slice(0, SPOTS.length)
+function ProjectStage({ p, index }) {
+  const scatter = [...p.highlights.slice(0, 4), ...p.tech.slice(0, 2)].slice(0, SPOTS.length)
 
   return (
     <>
       {/* Center composition */}
       <div className="absolute inset-0 grid place-items-center px-6">
         <motion.div
-          key={p.id}
           variants={container}
           initial="initial"
           animate="animate"
           exit="exit"
           className="relative w-full max-w-3xl text-center"
         >
-          {/* accent glow behind */}
           <div
-            className={`pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[26rem] w-[26rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br ${p.accent} opacity-25 blur-[90px] dark:opacity-30`}
+            className={`pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[24rem] w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br ${p.accent} opacity-25 blur-[90px] dark:opacity-30`}
           />
 
-          <motion.div variants={item} className="mb-4 flex items-center justify-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-ink-muted">
+          <motion.div
+            variants={item}
+            className="mb-4 flex items-center justify-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-ink-muted"
+          >
             <span className="text-lg font-bold text-ink">{String(index + 1).padStart(2, '0')}</span>
             <span className="h-px w-8 bg-ink/20" />
             <span>{p.category}</span>
-            {p.flag && <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-brand-600 dark:text-brand-300">{p.flag}</span>}
+            {p.flag && (
+              <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-brand-600 dark:text-brand-300">
+                {p.flag}
+              </span>
+            )}
           </motion.div>
 
           <motion.h2
@@ -99,7 +101,10 @@ function ProjectScene({ p, index, total }) {
             ))}
             {p.proprietary && (
               <span className="inline-flex items-center gap-1.5 rounded-full border border-ink/10 bg-surface/60 px-3 py-2 text-[11px] font-medium text-ink-muted">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
                 Code on request
               </span>
             )}
@@ -107,63 +112,40 @@ function ProjectScene({ p, index, total }) {
         </motion.div>
       </div>
 
-      {/* Scattered description chips (desktop only) */}
+      {/* Scattered chips (desktop only) */}
       <div className="pointer-events-none absolute inset-0 hidden md:block">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={p.id + '-scatter'}
-            variants={container}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="absolute inset-0"
-          >
-            {scatter.map((s, i) => {
-              const spot = SPOTS[i % SPOTS.length]
-              return (
-                <motion.span
-                  key={i}
-                  variants={item}
-                  style={{
-                    position: 'absolute',
-                    top: spot.top,
-                    left: spot.left,
-                    right: spot.right,
-                    bottom: spot.bottom,
-                    rotate: `${spot.rot}deg`,
-                  }}
-                  className="max-w-[16rem] rounded-2xl border border-ink/10 bg-surface/60 px-4 py-2 text-xs font-medium text-ink-soft shadow-card backdrop-blur-md"
-                >
-                  <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-brand-500 align-middle" />
-                  {s}
-                </motion.span>
-              )
-            })}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* Mobile details (stacked, no scatter) */}
-      <div className="absolute inset-x-0 bottom-6 px-6 md:hidden">
-        <div className="glass-card max-w-md p-4">
-          <div className="flex flex-wrap gap-1.5">
-            {p.tech.map((t) => (
-              <span key={t} className="chip">{t}</span>
-            ))}
-          </div>
-        </div>
+        {scatter.map((s, i) => {
+          const spot = SPOTS[i % SPOTS.length]
+          return (
+            <motion.span
+              key={i}
+              variants={item}
+              style={{
+                position: 'absolute',
+                top: spot.top,
+                left: spot.left,
+                right: spot.right,
+                bottom: spot.bottom,
+                rotate: `${spot.rot}deg`,
+              }}
+              className="max-w-[15rem] rounded-2xl border border-ink/10 bg-surface/60 px-4 py-2 text-xs font-medium text-ink-soft shadow-card backdrop-blur-md"
+            >
+              <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-brand-500 align-middle" />
+              {s}
+            </motion.span>
+          )
+        })}
       </div>
     </>
   )
 }
 
-export default function Projects() {
+function Showcase() {
   const sectionRef = useRef(null)
   const [active, setActive] = useState(0)
   const N = projects.length
 
   useEffect(() => {
-    if (reduceMotion) return
     const section = sectionRef.current
     if (!section) return
 
@@ -175,7 +157,6 @@ export default function Projects() {
       scrub: 0.6,
       anticipatePin: 1,
       invalidateOnRefresh: true,
-      snap: 1 / (N - 1),
       onUpdate: (self) => setActive(Math.round(self.progress * (N - 1))),
     })
 
@@ -190,30 +171,10 @@ export default function Projects() {
     }
   }, [N])
 
-  if (reduceMotion) {
-    return (
-      <section id="projects" className="section-pad">
-        <div className="container-px">
-          <h2 className="heading-lg mb-10">Projects</h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            {projects.map((proj) => (
-              <div key={proj.id} className="glass-card p-6">
-                <h3 className="heading-md mt-1">{proj.title}</h3>
-                <div className="text-brand-600">{proj.subtitle}</div>
-                <p className="body-lead mt-3 text-sm">{proj.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
-
   const p = projects[active]
 
   return (
     <section id="projects" ref={sectionRef} className="relative h-[100svh] w-full overflow-hidden">
-      {/* Top HUD */}
       <div className="container-px pointer-events-none absolute inset-x-0 top-24 z-20 flex items-center justify-between">
         <div className="eyebrow">
           <span className="h-px w-8 bg-brand-500" /> Selected work
@@ -226,13 +187,93 @@ export default function Projects() {
       </div>
 
       <AnimatePresence mode="wait">
-        <ProjectScene key={active} p={p} index={active} total={N} />
+        <ProjectStage key={active} p={p} index={active} />
       </AnimatePresence>
 
-      {/* Scroll hint */}
       <div className="pointer-events-none absolute inset-x-0 bottom-3 z-10 hidden text-center font-mono text-[11px] uppercase tracking-[0.3em] text-ink-muted md:block">
         Scroll for next ↻
       </div>
     </section>
   )
+}
+
+function MobileList() {
+  return (
+    <section id="projects" className="section-pad">
+      <div className="container-px">
+        <div className="mb-10 max-w-2xl">
+          <div className="eyebrow mb-4">
+            <span className="h-px w-8 bg-brand-500" /> Selected work
+          </div>
+          <h2 className="heading-lg">
+            Projects &amp; products I&apos;ve <span className="text-gradient">built.</span>
+          </h2>
+        </div>
+        <div className="flex flex-col gap-5">
+          {projects.map((p, i) => (
+            <motion.article
+              key={p.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="glass-card p-6"
+            >
+              <div className="flex items-center justify-between font-mono text-xs text-ink-muted">
+                <span className="text-sm font-bold text-ink">{String(i + 1).padStart(2, '0')}</span>
+                <span>{p.category}</span>
+              </div>
+              <h3 className="heading-md mt-3">{p.title}</h3>
+              <p className="mt-1 font-medium text-brand-600 dark:text-brand-300">{p.subtitle}</p>
+              <p className="mt-3 text-sm leading-relaxed text-ink-soft">{p.description}</p>
+              <ul className="mt-4 grid gap-1.5">
+                {p.highlights.map((h, j) => (
+                  <li key={j} className="flex gap-2 text-xs text-ink-soft">
+                    <svg className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-brand-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <path d="m5 12 5 5L20 7" />
+                    </svg>
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {p.tech.map((t) => (
+                  <span key={t} className="chip">
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-5 flex flex-wrap items-center gap-2">
+                {p.links.map((l) => (
+                  <a key={l.href} href={l.href} target="_blank" rel="noreferrer" className="btn-primary px-4 py-2 text-xs">
+                    <GithubIcon />
+                    {l.label}
+                  </a>
+                ))}
+                {p.proprietary && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-ink/10 bg-surface/60 px-3 py-2 text-[11px] font-medium text-ink-muted">
+                    Code on request
+                  </span>
+                )}
+              </div>
+            </motion.article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default function Projects() {
+  const [simple, setSimple] = useState(reduceMotion)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const update = () => setSimple(reduceMotion || mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  return simple ? <MobileList /> : <Showcase />
 }
