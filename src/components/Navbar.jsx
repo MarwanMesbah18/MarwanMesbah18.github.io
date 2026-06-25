@@ -25,7 +25,7 @@ export default function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-3 md:pt-4">
       <nav
         className={`group flex items-center gap-1 rounded-full border border-ink/10 bg-surface/70 shadow-card backdrop-blur-xl transition-all duration-500 ${
-          scrolled ? 'h-12 px-2' : 'h-14 pl-2 pr-2'
+          scrolled ? 'h-12 px-2 md:gap-0 md:group-hover:gap-1' : 'h-14 pl-2 pr-2'
         }`}
       >
         {/* MM logo — collapses on scroll, returns on hover (desktop) */}
@@ -80,7 +80,7 @@ export default function Navbar() {
           href="#contact"
           className={`hidden flex-shrink-0 items-center gap-2 overflow-hidden whitespace-nowrap rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow transition-all duration-500 hover:bg-brand-600 md:inline-flex ${
             scrolled
-              ? 'md:mr-1 md:max-w-0 md:opacity-0 md:group-hover:max-w-[9rem] md:group-hover:opacity-100'
+              ? 'md:max-w-0 md:opacity-0 md:group-hover:mr-1 md:group-hover:max-w-[9rem] md:group-hover:opacity-100'
               : 'mr-1 max-w-[9rem] opacity-100'
           }`}
         >

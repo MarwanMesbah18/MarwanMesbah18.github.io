@@ -128,9 +128,9 @@ function ProjectStage({ p, index }) {
                 bottom: spot.bottom,
                 rotate: `${spot.rot}deg`,
               }}
-              className="max-w-[15rem] rounded-2xl border border-ink/10 bg-surface/60 px-4 py-2 text-xs font-medium text-ink-soft shadow-card backdrop-blur-md"
+              className="max-w-[18rem] rounded-2xl border border-ink/15 bg-surface/90 px-5 py-3 text-sm font-semibold text-ink shadow-card backdrop-blur-md"
             >
-              <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-brand-500 align-middle" />
+              <span className="mr-2 inline-block h-2 w-2 rounded-full bg-brand-500 align-middle" />
               {s}
             </motion.span>
           )
