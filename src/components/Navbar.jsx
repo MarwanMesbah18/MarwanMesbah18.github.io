@@ -66,17 +66,22 @@ export default function Navbar() {
           <ThemeToggle />
         </div>
 
-        {/* CTA — collapses on scroll, returns on hover (desktop) */}
-        <a
-          href="#contact"
-          className={`hidden flex-shrink-0 min-w-0 items-center gap-2 overflow-hidden whitespace-nowrap rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow transition-all duration-500 hover:bg-brand-600 md:inline-flex ${
+        {/* CTA — collapses on scroll, returns on hover (desktop). Wrapped so it
+            collapses reliably (inline-flex items resist max-width:0). */}
+        <div
+          className={`flex min-w-0 flex-shrink-0 items-center overflow-hidden whitespace-nowrap transition-all duration-500 ${
             scrolled
               ? 'md:max-w-0 md:opacity-0 md:group-hover:mr-1 md:group-hover:max-w-[9rem] md:group-hover:opacity-100'
               : 'mr-1 max-w-[9rem] opacity-100'
           }`}
         >
-          Let&apos;s talk
-        </a>
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-brand-600 md:inline-flex"
+          >
+            Let&apos;s talk
+          </a>
+        </div>
 
         {/* Mobile menu button */}
         <button
