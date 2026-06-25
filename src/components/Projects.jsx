@@ -1,15 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { projects } from '../data/projects'
-
-gsap.registerPlugin(ScrollTrigger)
 
 const reduceMotion =
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-// Scatter positions — kept close to the centered card.
+// Scatter positions for the floating chips (desktop).
 const SPOTS = [
   { top: '24%', left: '17%', rot: -6 },
   { top: '27%', right: '19%', rot: 5 },
@@ -60,16 +56,18 @@ function ProjectStage({ p, index }) {
           className="relative w-full max-w-3xl text-center"
         >
           <div
-            className={`pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[24rem] w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br ${p.accent} opacity-25 blur-[90px] dark:opacity-30`}
+            className={`pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[22rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br ${p.accent} opacity-25 blur-[90px] dark:opacity-30`}
           />
 
           <motion.div
             variants={item}
-            className="mb-4 flex items-center justify-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-ink-muted"
+            className="mb-3 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted sm:gap-3 sm:text-xs"
           >
-            <span className="text-lg font-bold text-ink">{String(index + 1).padStart(2, '0')}</span>
-            <span className="h-px w-8 bg-ink/20" />
-            <span>{p.category}</span>
+            <span className="text-base font-bold text-ink sm:text-lg">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <span className="h-px w-6 bg-ink/20 sm:w-8" />
+            <span className="hidden sm:inline">{p.category}</span>
             {p.flag && (
               <span className="rounded-full bg-brand-500/15 px-2 py-0.5 text-brand-600 dark:text-brand-300">
                 {p.flag}
@@ -79,22 +77,46 @@ function ProjectStage({ p, index }) {
 
           <motion.h2
             variants={item}
-            className="font-display text-5xl font-extrabold leading-[0.95] tracking-tight text-ink sm:text-7xl md:text-8xl"
+            className="font-display text-4xl font-extrabold leading-[0.95] tracking-tight text-ink sm:text-6xl md:text-8xl"
           >
             {p.title}
           </motion.h2>
 
-          <motion.p variants={item} className="mt-3 font-display text-lg font-semibold text-gradient sm:text-2xl">
+          <motion.p
+            variants={item}
+            className="mt-2 font-display text-base font-semibold text-gradient sm:mt-3 sm:text-2xl"
+          >
             {p.subtitle}
           </motion.p>
 
-          <motion.p variants={item} className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-ink-soft sm:text-base">
+          <motion.p
+            variants={item}
+            className="mx-auto mt-3 max-w-xl text-xs leading-relaxed text-ink-soft sm:mt-5 sm:text-base"
+          >
             {p.description}
           </motion.p>
 
-          <motion.div variants={item} className="mt-7 flex flex-wrap items-center justify-center gap-2">
+          {/* Mobile: inline tech chips (scattered chips are desktop-only) */}
+          <motion.div variants={item} className="mt-4 flex flex-wrap items-center justify-center gap-1.5 md:hidden">
+            {p.tech.slice(0, 4).map((t) => (
+              <span key={t} className="rounded-full border border-ink/10 bg-surface/70 px-2.5 py-1 text-[10px] font-medium text-ink-soft">
+                {t}
+              </span>
+            ))}
+          </motion.div>
+
+          <motion.div
+            variants={item}
+            className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:mt-7"
+          >
             {p.links.map((l) => (
-              <a key={l.href} href={l.href} target="_blank" rel="noreferrer" className="btn-primary px-5 py-2.5 text-sm">
+              <a
+                key={l.href}
+                href={l.href}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-primary px-4 py-2 text-xs sm:px-5 sm:py-2.5 sm:text-sm"
+              >
                 <GithubIcon />
                 {l.label}
               </a>
@@ -112,7 +134,7 @@ function ProjectStage({ p, index }) {
         </motion.div>
       </div>
 
-      {/* Scattered chips (desktop only) */}
+      {/* Scattered chips — desktop only */}
       <div className="pointer-events-none absolute inset-0 hidden md:block">
         {scatter.map((s, i) => {
           const spot = SPOTS[i % SPOTS.length]
@@ -148,51 +170,55 @@ function Showcase() {
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
-    if (!window.matchMedia('(min-width: 768px)').matches) return
 
-    const st = ScrollTrigger.create({
-      trigger: section,
-      start: 'top top',
-      end: () => '+=' + window.innerHeight * N,
-      pin: true,
-      scrub: 0.6,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => setActive(Math.round(self.progress * (N - 1))),
-    })
+    let raf = 0
+    const update = () => {
+      raf = 0
+      const rect = section.getBoundingClientRect()
+      const total = section.offsetHeight - window.innerHeight
+      const progress = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0
+      setActive(Math.round(progress * (N - 1)))
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update)
+    }
 
-    const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 350)
-    const onResize = () => ScrollTrigger.refresh()
-    window.addEventListener('resize', onResize)
-
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
     return () => {
-      clearTimeout(refreshTimer)
-      window.removeEventListener('resize', onResize)
-      st.kill()
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (raf) cancelAnimationFrame(raf)
     }
   }, [N])
 
   const p = projects[active]
 
   return (
-    <section id="projects" ref={sectionRef} className="relative h-[100svh] w-full overflow-hidden">
-      <div className="container-px pointer-events-none absolute inset-x-0 top-24 z-20 flex items-center justify-between">
-        <div className="eyebrow">
-          <span className="h-px w-8 bg-brand-500" /> Selected work
+    <section id="projects" ref={sectionRef} style={{ height: `${N * 100}vh` }} className="relative">
+      <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
+        {/* HUD */}
+        <div className="container-px pointer-events-none absolute inset-x-0 top-20 z-20 flex items-center justify-between sm:top-24">
+          <div className="eyebrow">
+            <span className="h-px w-8 bg-brand-500" /> Selected work
+          </div>
+          <div className="flex items-center gap-2 font-mono text-sm text-ink-muted sm:gap-3">
+            <span className="text-base font-bold text-ink sm:text-lg">
+              {String(active + 1).padStart(2, '0')}
+            </span>
+            <span>/</span>
+            <span>{String(N).padStart(2, '0')}</span>
+          </div>
         </div>
-        <div className="flex items-center gap-3 font-mono text-sm text-ink-muted">
-          <span className="text-lg font-bold text-ink">{String(active + 1).padStart(2, '0')}</span>
-          <span>/</span>
-          <span>{String(N).padStart(2, '0')}</span>
+
+        <AnimatePresence mode="wait">
+          <ProjectStage key={active} p={p} index={active} />
+        </AnimatePresence>
+
+        <div className="pointer-events-none absolute inset-x-0 bottom-3 z-10 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-ink-muted sm:text-[11px] sm:tracking-[0.3em]">
+          Scroll for next ↻
         </div>
-      </div>
-
-      <AnimatePresence mode="wait">
-        <ProjectStage key={active} p={p} index={active} />
-      </AnimatePresence>
-
-      <div className="pointer-events-none absolute inset-x-0 bottom-3 z-10 hidden text-center font-mono text-[11px] uppercase tracking-[0.3em] text-ink-muted md:block">
-        Scroll for next ↻
       </div>
     </section>
   )
@@ -227,16 +253,6 @@ function MobileList() {
               <h3 className="heading-md mt-3">{p.title}</h3>
               <p className="mt-1 font-medium text-brand-600 dark:text-brand-300">{p.subtitle}</p>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">{p.description}</p>
-              <ul className="mt-4 grid gap-1.5">
-                {p.highlights.map((h, j) => (
-                  <li key={j} className="flex gap-2 text-xs text-ink-soft">
-                    <svg className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-brand-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                      <path d="m5 12 5 5L20 7" />
-                    </svg>
-                    <span>{h}</span>
-                  </li>
-                ))}
-              </ul>
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {p.tech.map((t) => (
                   <span key={t} className="chip">
@@ -266,19 +282,5 @@ function MobileList() {
 }
 
 export default function Projects() {
-  const [simple, setSimple] = useState(
-    () =>
-      reduceMotion ||
-      (typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches),
-  )
-
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)')
-    const update = () => setSimple(reduceMotion || mq.matches)
-    update()
-    mq.addEventListener('change', update)
-    return () => mq.removeEventListener('change', update)
-  }, [])
-
-  return simple ? <MobileList /> : <Showcase />
+  return reduceMotion ? <MobileList /> : <Showcase />
 }
