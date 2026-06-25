@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --bg: 248 250 252;
+  --bg-2: 238 242 247;
+  --surface: 255 255 255;
+  --text: 15 23 42;
+  --text-soft: 51 65 85;
+  --text-muted: 100 116 139;
+  --card-shadow: 0 10px 40px -15px rgba(15, 23, 42, 0.18);
+}
+
+.dark {
+  color-scheme: dark;
+  --bg: 8 12 22;
+  --bg-2: 13 18 30;
+  --surface: 23 31 46;
+  --text: 232 238 250;
+  --text-soft: 178 189 211;
+  --text-muted: 134 148 174;
+  --card-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.55);
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles smoothing */
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: rgb(var(--bg));
+  color: rgb(var(--text));
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Thin custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(28, 156, 148, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(28, 156, 148, 0.6);
+}
+
+::selection {
+  background: rgba(28, 156, 148, 0.25);
+}
+
+@layer components {
+  .container-px {
+    @apply mx-auto w-full max-w-6xl px-6 md:px-10;
+  }
+
+  .section-pad {
+    @apply py-24 md:py-32;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-brand-600;
+  }
+
+  .heading-xl {
+    @apply font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-ink sm:text-5xl md:text-6xl;
+  }
+
+  .heading-lg {
+    @apply font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl;
+  }
+
+  .heading-md {
+    @apply font-display text-2xl font-semibold tracking-tight text-ink;
+  }
+
+  .body-lead {
+    @apply text-base leading-relaxed text-ink-soft sm:text-lg;
+  }
+
+  .glass-card {
+    border-radius: 1rem;
+    background: rgb(var(--surface) / 0.72);
+    border: 1px solid rgb(var(--text) / 0.08);
+    box-shadow: var(--card-shadow);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-full border bg-brand-50/70 px-3 py-1 font-mono text-xs font-medium text-brand-700 transition-colors hover:bg-brand-100 dark:bg-brand-500/10 dark:text-brand-200 dark:border-brand-400/30;
+    border-color: theme('colors.brand.200');
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white shadow-glow transition-all hover:-translate-y-0.5 hover:bg-brand-600 active:translate-y-0;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink/10 bg-surface/70 px-6 py-3 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:text-brand-600;
+  }
+}
+
+/* Reveal animation defaults (driven by GSAP) */
+.reveal,
+[data-reveal] {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(120deg, #2563eb 0%, #60a5fa 50%, #1e3a8a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Subtle dotted grid background */
+.bg-dot-grid {
+  background-image: radial-gradient(rgba(37, 99, 235, 0.14) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

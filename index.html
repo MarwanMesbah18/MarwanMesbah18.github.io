@@ -1,197 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>CV - Marwan Mesbah</title>
-  <meta name="description" content="Professional CV of Marwan Mesbah - Software Developer & ROV Engineer">
-  <meta name="author" content="Marwan Mesbah">
-  <link rel="icon" href="./img/favicon.ico">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css">
-</head>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          var d = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (d) document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
+    <title>Marwan Mesbah — AI & Full-Stack Developer</title>
+    <meta
+      name="description"
+      content="Marwan Mesbah — CS & AI student at AAST, Head of Software & AI at RobEn. Computer vision, YOLO, machine learning, and full-stack development. 2nd place MATE ROV 2025 & 2026."
+    />
+    <meta name="author" content="Marwan Mesbah" />
 
-<body>
-  <header>
-    <div>
-      <img src="./img/avatar.jpg" alt="Marwan Mesbah" />
-    </div>
-    <h1>Marwan Mesbah</h1>
-    <section>
-      <p>Hello! I'm Marwan Mesbah, a passionate software developer specializing in full-stack development and ROV (Remotely Operated Vehicle) systems. I have extensive experience in building web applications and working on advanced robotics projects. I'm focused, dedicated, and always eager to learn new technologies.</p>
-      <a href="https://github.com/MarwanMesbah18" target="_blank">
-        <i class="fab fa-github-alt"></i>
-      </a>
-      <a href="https://www.linkedin.com/in/marwan-mesbah-127835253/" target="_blank">
-        <i class="fab fa-linkedin-in"></i>
-      </a>
-      <!-- Add your social media links here -->
-    </section>
-  </header>
-  <main>
-    <section>
-      <h3>Featured Projects</h3>
-      <article class='course'>
-        <div class='title'>
-          <h4>ROV-GUI-2024 (RobEn Team)</h4>
-        </div>
-        <div class="descrition">
-          <p><strong>Tech stack:</strong> Python, Flask, Raspberry Pi, OpenCV, WebSockets</p>
-          <p>
-            Developed a comprehensive GUI for Remotely Operated Vehicle (ROV) used by Team RobEn. Features real-time camera
-            streaming, telemetry display (temperature, sensors, etc.), direct command interface to the ROV’s Raspberry Pi, and
-            task-specific helper pages. Enhanced usability and operational efficiency during underwater missions.
-          </p>
-          <a href="https://github.com/RobEn-AAST/ROV-GUI-2024" target="_blank">View on GitHub</a>
-        </div>
-        </article>
-        
-        <article class='course'>
-          <div class='title'>
-            <h4>Shapes Detection AI Model</h4>
-          </div>
-          <div class="descrition">
-            <p><strong>Tech stack:</strong> Python, YOLOv11, OpenCV, Deep Learning</p>
-            <p>
-              Designed and trained a custom AI model using YOLOv11 for detecting geometric shapes in images and video streams.
-              Integrated into ROV tasks for object and shape recognition, assisting in mission automation and scoring.
-            </p>
-            <a href="https://github.com/RobEn-AAST/UWRC-Competition" target="_blank">View on GitHub</a>          </div>        </article>
-        
-        <article class='course'>
-          <div class='title'>
-            <h4>Car Service Center Management System</h4>
-          </div>
-          <div class="descrition">
-            <p><strong>Tech stack:</strong> SQL, Microsoft Database, Business Intelligence</p>
-            <p>Comprehensive management system for car service centers featuring reservation scheduling, customer management, service tracking, and business analytics. Provides valuable insights and data-driven decision making tools for business operations and performance optimization.</p>
-            <a href="#" target="_blank">View Project Details</a>
-          </div>
-        </article>
-        
-        <article class='course'>
-          <div class='title'>
-            <h4>E-Commerce Book Shop</h4>
-          </div>
-          <div class="descrition">
-            <p><strong>Tech stack:</strong> Java, JSP, Derby Database, SQL, HTML/CSS</p>
-            <p>Full-featured online bookstore with user authentication, shopping cart functionality, admin panel, and responsive design. Includes user management, inventory control, and checkout system.</p>
-            <a href="https://github.com/MarwanMesbah18/Book_Shop_Project" target="_blank">View on GitHub</a>
-          </div>
-        </article>
-    </section>
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Marwan Mesbah — AI & Full-Stack Developer" />
+    <meta
+      property="og:description"
+      content="Computer vision, machine learning, robotics software, and full-stack development."
+    />
+    <meta property="og:image" content="/avatar.jpg" />
 
-    <section>
-      <h3>Technical Skills</h3>
-      <div class='skills'>
-        <div class='column'>          <h4>Programming Languages</h4>
-          <ul>
-            <li>Python</li>
-            <li>Java</li>
-            <li>C/C++</li>
-            <li>JavaScript</li>
-            <li>HTML5</li>
-            <li>CSS3</li>
-            <li>PHP</li>
-            <li>SQL</li>
-          </ul>
-        </div>
-        <div class='column'>          <h4>Frameworks & Technologies</h4>
-          <ul>
-            <li>Django</li>
-            <li>Flask</li>
-            <li>Bootstrap</li>
-            <li>JSP/Servlets</li>
-            <li>SQL Databases</li>
-            <li>Microsoft Database</li>
-            <li>Business Intelligence</li>
-            <li>Git/GitHub</li>
-            <li>REST APIs</li>
-            <li>YOLOv11</li>
-            <li>OpenCV</li>
-          </ul>
-        </div>        <div>
-          <h4>Specializations</h4>
-          <ul>
-            <li>🤖 ROV Systems & Automation</li>
-            <li>🧠 AI & Machine Learning</li>
-            <li>📹 Camera Systems Integration</li>
-            <li>🌐 Full-Stack Web Development</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h3>ROV Experience & Achievements</h3>
-      <article>
-        <div class='job-title'>
-          <span>2022-2024</span> <strong>ROV Software Engineer</strong><br> <strong>Team:</strong> RobEn
-        </div>
-        <div>
-          <p><strong>Specializations:</strong> Camera Systems Integration, Software Development, AI Implementation, Automation</p>
-          <ul class="job-description">
-            <li>Developed and integrated camera connection systems for underwater ROV operations</li>
-            <li>Implemented AI algorithms for autonomous navigation and object detection</li>
-            <li>Created automation scripts for ROV control and data collection</li>
-            <li>Worked extensively on software architecture and system optimization</li>
-            <li>Collaborated with hardware teams for seamless software-hardware integration</li>
-          </ul>
-        </div>
-      </article>
-    </section>    <section>
-      <h3>Achievements & Certifications</h3>
-      <article class='course'>
-        <div class='title'>
-          <h4>MATE ROV Competition</h4>
-        </div>
-        <div class="descrition">
-          <p><strong>🥈 2nd Place Winner (2024)</strong> - Team RobEn</p>
-          <p><strong>🏆 Participant (2023)</strong> - Team RobEn</p>          <p>International underwater robotics competition focusing on ROV design, construction, and operation. Demonstrated excellence in software development, system integration, and team collaboration.</p>
-          <div class="certificate-links">
-            <a href="./img/mate-2024-certificate.pdf" target="_blank" class="certificate-link">
-              <div class="certificate-preview">
-                <i class="fas fa-file-pdf"></i>
-                <span>2024 - 2nd Place Certificate</span>
-              </div>
-            </a>
-            <a href="./img/mate-2023-certificate.pdf" target="_blank" class="certificate-link">
-              <div class="certificate-preview">
-                <i class="fas fa-file-pdf"></i>
-                <span>2023 - Participation Certificate</span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </article>
-      <article class='course'>
-        <div class='title'>
-          <h4>Web Development Scholarship</h4>
-        </div>
-        <div class="descrition">
-          <p><strong>Sponsor:</strong> Ministry of Communication and Information Technology - Egypt</p>          <p>Specialized program in web development technologies, covering modern frameworks, responsive design, and industry best practices.</p>
-          <div class="certificate-links">
-            <a href="./img/web-dev-scholarship-certificate.pdf" target="_blank" class="certificate-link">
-              <div class="certificate-preview">
-                <i class="fas fa-file-pdf"></i>
-                <span>Web Development Scholarship Certificate</span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <section>
-      <h3>Languages</h3>
-      <div>
-        <p>🇪🇬 Arabic - Native speaker</p>
-        <p>🇬🇧 English - Proficient</p>
-      </div>
-    </section>
-  </main>
-  <footer>
-    <p>Created by: <a href="https://github.com/MarwanMesbah18">@MarwanMesbah18</a> / <a href="https://www.linkedin.com/in/marwan-mesbah">LinkedIn</a> / 2024 </p>
-  </footer>
-</body>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

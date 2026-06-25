@@ -1,0 +1,53 @@
+export const skillGroups = [
+  {
+    title: 'AI / Machine Learning',
+    icon: 'brain',
+    accent: 'from-brand-400 to-brand-600',
+    items: [
+      'Python',
+      'PyTorch',
+      'TensorFlow / Keras',
+      'scikit-learn',
+      'YOLO (Ultralytics)',
+      'OpenCV',
+      'MediaPipe',
+      'Deep Learning',
+      'Machine Learning',
+      'Computer Vision',
+    ],
+  },
+  {
+    title: 'Full-Stack Development',
+    icon: 'stack',
+    accent: 'from-sky-400 to-brand-500',
+    items: [
+      'React',
+      'Next.js',
+      'Node.js / Express',
+      'JavaScript',
+      'PostgreSQL',
+      'SQL / MS SQL Server',
+      'HTML5',
+      'CSS3',
+      'REST APIs',
+    ],
+  },
+  {
+    title: 'Languages',
+    icon: 'code',
+    accent: 'from-violet-400 to-brand-500',
+    items: ['Python', 'JavaScript', 'Java', 'C / C++', 'R', 'SQL'],
+  },
+  {
+    title: 'Tools & Platforms',
+    icon: 'wrench',
+    accent: 'from-amber-400 to-brand-500',
+    items: ['Git / GitHub', 'Docker', 'Raspberry Pi', 'Streamlit', 'Shiny', 'Airflow', 'Linux'],
+  },
+  {
+    title: 'Leadership & Engineering',
+    icon: 'compass',
+    accent: 'from-rose-400 to-brand-500',
+    items: ['Team Leadership', 'Project Management', 'Problem Solving', 'Engineering', 'Debugging'],
+  },
+]
