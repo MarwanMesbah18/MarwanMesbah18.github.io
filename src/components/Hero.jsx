@@ -18,15 +18,15 @@ function RoleRotator() {
     return () => clearInterval(t)
   }, [])
   return (
-    <span className="relative inline-flex h-[1.4em] overflow-hidden align-bottom">
+    <span className="mt-1 block">
       <AnimatePresence mode="wait">
         <motion.span
           key={i}
-          initial={{ y: '100%', opacity: 0 }}
-          animate={{ y: '0%', opacity: 1 }}
-          exit={{ y: '-100%', opacity: 0 }}
+          initial={{ y: 22, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -22, opacity: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="text-gradient whitespace-nowrap font-extrabold"
+          className="block text-gradient font-extrabold leading-[1.08]"
         >
           {profile.roles[i]}
         </motion.span>
@@ -50,8 +50,9 @@ export default function Hero() {
         </motion.div>
 
         <motion.h1 variants={item} className="heading-xl max-w-4xl">
-          Hi, I&apos;m {profile.name}. <br className="hidden sm:block" />
-          I&apos;m a <RoleRotator />
+          Hi, I&apos;m {profile.name}.
+          <span className="block">I&apos;m a</span>
+          <RoleRotator />
         </motion.h1>
 
         <motion.p variants={item} className="body-lead mt-7 max-w-2xl">

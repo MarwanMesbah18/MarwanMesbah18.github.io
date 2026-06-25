@@ -5,14 +5,15 @@ import { projects } from '../data/projects'
 const reduceMotion =
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-// Scatter positions for the floating chips (desktop).
+// Scatter positions for the floating chips — kept in the safe side margins,
+// only shown on wide (xl+) screens so they never overlap the centered title.
 const SPOTS = [
-  { top: '24%', left: '17%', rot: -6 },
-  { top: '27%', right: '19%', rot: 5 },
-  { top: '47%', left: '13%', rot: 4 },
-  { bottom: '27%', right: '15%', rot: -5 },
-  { bottom: '20%', left: '24%', rot: 6 },
-  { top: '45%', right: '15%', rot: -4 },
+  { top: '17%', left: '4%', rot: -6 },
+  { top: '19%', right: '5%', rot: 5 },
+  { top: '50%', left: '1%', rot: 4 },
+  { bottom: '19%', right: '3%', rot: -5 },
+  { bottom: '17%', left: '5%', rot: 6 },
+  { top: '52%', right: '1%', rot: -4 },
 ]
 
 const container = {
@@ -96,13 +97,25 @@ function ProjectStage({ p, index }) {
             {p.description}
           </motion.p>
 
-          {/* Mobile: inline tech chips (scattered chips are desktop-only) */}
-          <motion.div variants={item} className="mt-4 flex flex-wrap items-center justify-center gap-1.5 md:hidden">
-            {p.tech.slice(0, 4).map((t) => (
-              <span key={t} className="rounded-full border border-ink/10 bg-surface/70 px-2.5 py-1 text-[10px] font-medium text-ink-soft">
-                {t}
-              </span>
-            ))}
+          {/* Inline highlights — cohesive block shown below xl (mobile/tablet/narrow windows) */}
+          <motion.div variants={item} className="mt-4 flex flex-col items-center gap-3 xl:hidden">
+            <ul className="grid max-w-md gap-1.5 text-left">
+              {p.highlights.slice(0, 2).map((h, j) => (
+                <li key={j} className="flex gap-2 text-[11px] text-ink-soft sm:text-sm">
+                  <svg className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-brand-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                    <path d="m5 12 5 5L20 7" />
+                  </svg>
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="flex flex-wrap justify-center gap-1.5">
+              {p.tech.slice(0, 5).map((t) => (
+                <span key={t} className="rounded-full border border-ink/10 bg-surface/70 px-2.5 py-1 text-[10px] font-medium text-ink-soft sm:text-xs">
+                  {t}
+                </span>
+              ))}
+            </div>
           </motion.div>
 
           <motion.div
@@ -134,8 +147,8 @@ function ProjectStage({ p, index }) {
         </motion.div>
       </div>
 
-      {/* Scattered chips — desktop only */}
-      <div className="pointer-events-none absolute inset-0 hidden md:block">
+      {/* Scattered chips — wide desktop only (xl+), positioned in the side margins */}
+      <div className="pointer-events-none absolute inset-0 hidden xl:block">
         {scatter.map((s, i) => {
           const spot = SPOTS[i % SPOTS.length]
           return (
