@@ -69,7 +69,7 @@ export default function Navbar() {
         {/* CTA — collapses on scroll, returns on hover (desktop). Wrapped so it
             collapses reliably (inline-flex items resist max-width:0). */}
         <div
-          className={`flex min-w-0 flex-shrink-0 items-center overflow-hidden whitespace-nowrap transition-all duration-500 ${
+          className={`hidden min-w-0 flex-shrink-0 items-center overflow-hidden whitespace-nowrap transition-all duration-500 md:flex ${
             scrolled
               ? 'md:max-w-0 md:opacity-0 md:group-hover:mr-1 md:group-hover:max-w-[9rem] md:group-hover:opacity-100'
               : 'mr-1 max-w-[9rem] opacity-100'

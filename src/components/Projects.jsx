@@ -148,6 +148,7 @@ function Showcase() {
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
+    if (!window.matchMedia('(min-width: 768px)').matches) return
 
     const st = ScrollTrigger.create({
       trigger: section,
@@ -265,7 +266,11 @@ function MobileList() {
 }
 
 export default function Projects() {
-  const [simple, setSimple] = useState(reduceMotion)
+  const [simple, setSimple] = useState(
+    () =>
+      reduceMotion ||
+      (typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches),
+  )
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)')
