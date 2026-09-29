@@ -35,7 +35,7 @@ const _all = [
       'ResNet-50 implemented from scratch (bottleneck blocks + Kaiming init)',
       'CutMix augmentation + mixed-precision (AMP) training',
       'AdamW + CosineAnnealingLR, early stopping, 70/15/15 split',
-      'Targeting 90–95% accuracy training from scratch',
+      'Achieved 98.32% test accuracy (trained from scratch + CutMix + TTA)',
     ],
     tech: ['Python', 'PyTorch', 'ResNet-50', 'CNN', 'Kaggle GPU', 'NumPy'],
     image: null,
@@ -127,5 +127,5 @@ const _all = [
   },
 ]
 
-const PROJECT_ORDER = ['chameleoni', 'radar', 'eurosat', 'imu', 'attendance', 'fruit-ninja']
+const PROJECT_ORDER = ['radar', 'eurosat', 'chameleoni', 'imu', 'attendance', 'fruit-ninja']
 export const projects = PROJECT_ORDER.map((id) => _all.find((p) => p.id === id)).filter(Boolean)
