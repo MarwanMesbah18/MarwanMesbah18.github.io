@@ -22,6 +22,8 @@ export const skillGroups = [
     accent: 'from-sky-400 to-brand-500',
     items: [
       'React',
+      'React Native',
+      'Expo',
       'Next.js',
       'Node.js / Express',
       'JavaScript',

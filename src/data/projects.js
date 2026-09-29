@@ -8,7 +8,6 @@ const _all = [
     subtitle: 'Real-Time Vehicle Analysis System',
     category: 'Computer Vision · Deep Learning',
     year: '2025',
-    flag: 'Flagship',
     description:
       'An AI traffic-safety system that detects cars, reads Egyptian license plates with custom-trained YOLO + OCR models, and flags seatbelt & phone violations in real time. AI super-resolution (LapSRN, Real-ESRGAN) recovers OCR accuracy on low-resolution plates, and a Streamlit dashboard offers live confidence filtering.',
     highlights: [
